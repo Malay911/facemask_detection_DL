@@ -1,119 +1,93 @@
-# Face Mask Detection API
+# MaskGuard AI — Intelligent Face Mask Compliance Monitoring
 
-A production-ready FastAPI backend for face mask detection using a PyTorch CNN model.
+An AI-powered real-time face mask detection and compliance monitoring system. Detect multiple faces, analyze mask compliance, and explore how Convolutional Neural Networks (CNNs) process images through an interactive simulation.
 
-## Project Structure
+![MaskGuard AI](https://img.shields.io/badge/Status-Active-brightgreen)
+![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?logo=fastapi)
+![Next.js](https://img.shields.io/badge/Frontend-Next.js-000000?logo=next.js)
+![PyTorch](https://img.shields.io/badge/AI-PyTorch-EE4C2C?logo=pytorch)
 
-```
-facemask_detection/
-    app/
-        __init__.py
-        main.py            # FastAPI application & endpoints
-        model_loader.py    # TorchScript model loading
-        inference.py       # Prediction logic
-        schemas.py         # Pydantic request/response models
-        utils.py           # Image preprocessing utilities
-    model/
-        mask_detector_scripted.pt   # TorchScript model
-    requirements.txt
-    README.md
-```
+## 🌟 Key Features
 
-## Installation
+- **Real-Time Detection**: Lightning-fast inference (< 100ms) for detecting face masks in images.
+- **Multi-Face Tracking**: Accurately identifies multiple faces in a single frame and draws styled bounding boxes.
+- **3-Class Classification**: Classifies faces into three categories: `With Mask`, `Without Mask`, and `Incorrect Mask`.
+- **Interactive CNN Simulation**: Educational "How It Works" module that visualizes the AI pipeline (Preprocessing, Convolution, ReLU, Pooling, FC Layer).
+- **Premium UI/UX**: State-of-the-art dark mode design with glassmorphism, neon glows, and smooth micro-animations using Framer Motion.
+
+## 🏗️ Architecture & Tech Stack
+
+The system is divided into two decoupled components:
+
+### Frontend (Next.js)
+- **Framework**: Next.js 14 (App Router), React 18
+- **Styling**: Tailwind CSS
+- **Animations**: Framer Motion
+- **Icons**: Lucide React
+- **Location**: `/frontend`
+
+### Backend (FastAPI / PyTorch)
+- **API Framework**: FastAPI
+- **Model Architecture**: Faster R-CNN with a ResNet50-FPN backbone
+- **Image Processing**: OpenCV, Pillow, Torchvision
+- **Location**: `/` and `/app`
+
+## 🚀 Live Demo & Links
+
+- **Backend API Deployment**: [Hugging Face Spaces](https://malay911-facemask-detection.hf.space)
+- **GitHub Repository**: [facemask_detection_DL](https://github.com/Malay911/facemask_detection_DL)
+
+## 💻 Local Development Setup
+
+### 1. Backend Setup
+
+The backend serves the PyTorch model via a REST API.
 
 ```bash
+# Clone the repository
+git clone https://github.com/Malay911/facemask_detection_DL.git
+cd facemask_detection_DL/facemask_detection
+
 # Create virtual environment (recommended)
 python -m venv venv
 venv\Scripts\activate       # Windows
 # source venv/bin/activate  # Linux/Mac
 
-# Install dependencies
+# Install backend dependencies
 pip install -r requirements.txt
+
+# Run the FastAPI server
+uvicorn app.app:app --reload
 ```
+The API will be live at: `http://localhost:8000`
 
-> **Note:** For PyTorch, you may want to install the CPU-only version to save space:
-> ```bash
-> pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
-> ```
+### 2. Frontend Setup
 
-## Running the Server
+The frontend consumes the FastAPI backend.
 
 ```bash
-uvicorn app.main:app --reload
+# Navigate to the frontend directory
+cd /frontend
+
+# Install Node.js dependencies
+npm install
+
+# Run the Next.js development server
+npm run dev
 ```
+The web app will be accessible at: `http://localhost:3000`
 
-The API is live at: `https://malay911-facemask-detection.hf.space`
+## 📡 API Endpoints
 
-## API Documentation (Swagger UI)
+The backend exposes the following key endpoints:
 
-Open your browser and go to:
+- `GET /health` : API status check.
+- `POST /detect` : Accepts an image file and returns bounding boxes, labels, confidences, and a base64 encoded annotated image.
+- `POST /predict` : Legacy single-face prediction.
+- `POST /predict/base64` : Base64 string prediction.
 
-```
-https://malay911-facemask-detection.hf.space/docs
-```
+Detailed API documentation (Swagger UI) is available at `/docs` when the backend is running.
 
-This provides an interactive interface to test all endpoints.
+## 📄 License
 
-## API Endpoints
-
-### 1. Health Check
-
-```
-GET /health
-```
-
-Response:
-```json
-{"status": "API running"}
-```
-
-### 2. Predict from Image Upload
-
-```
-POST /predict
-```
-
-- Upload an image file (JPEG, PNG, WebP, BMP)
-- Returns prediction and confidence
-
-Response:
-```json
-{"prediction": "With Mask", "confidence": 0.96}
-```
-
-### 3. Predict from Base64 Image
-
-```
-POST /predict/base64
-```
-
-- Send base64-encoded image in JSON body
-- Returns prediction and confidence
-
-Request body:
-```json
-{"image": "base64_encoded_string_here"}
-```
-
-## Testing with cURL
-
-```bash
-# Health check
-curl https://malay911-facemask-detection.hf.space/health
-
-# Predict from file
-curl -X POST -F "file=@test_image.jpg" https://malay911-facemask-detection.hf.space/predict
-
-# Predict from base64
-curl -X POST -H "Content-Type: application/json" \
-  -d '{"image": "base64_string_here"}' \
-  https://malay911-facemask-detection.hf.space/predict/base64
-```
-
-## Tech Stack
-
-- **FastAPI** — High-performance async web framework
-- **PyTorch** — Deep learning inference (TorchScript)
-- **Torchvision** — Image preprocessing transforms
-- **Uvicorn** — ASGI server
-- **Pillow** — Image handling
+This project is licensed under the MIT License.
